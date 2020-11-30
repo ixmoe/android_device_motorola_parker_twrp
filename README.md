@@ -28,6 +28,14 @@ Check here: https://github.com/ixmoe/android_kernel_motorola_sm6150
 lunch omni_parker-eng
 make -j4 recoveryimage
 ```
+
+To automatically make the twrp installer, you need to import this commit in the build/make path: https://gerrit.omnirom.org/#/c/android_build/+/33182/
+and add @osm0sis' standard twrp_abtemplate repo to a local manifest as indicated below (followed by another `repo sync` to download the repo):
+
+```xml
+<project name="osm0sis/twrp_abtemplate" path="bootable/recovery/installer" remote="github" revision="master"/>
+```
+
 ### Copyright
  ```
   /*
