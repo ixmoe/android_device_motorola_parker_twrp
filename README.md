@@ -8,7 +8,7 @@ CPU     | Octa-core (2x2.0 GHz Kryo 460 Gold & 6x1.7 GHz Kryo 460 Silver)
 CHIPSET | Qualcomm SDM675 Snapdragon 675
 GPU     | Adreno 612
 Memory  | 4 / 6GB
-Shipped Android Version | 8.1 (Oreo)
+Shipped Android Version | 9 (Pie)
 Storage | 128GB
 Battery | 4000 mAh
 Dimensions | 158 x 75 x 8.8 mm
