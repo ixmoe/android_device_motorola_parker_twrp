@@ -16,3 +16,8 @@
 
 PRODUCT_MAKEFILES := \
     $(LOCAL_DIR)/omni_parker.mk
+
+COMMON_LUNCH_CHOICES := \
+    omni_parker-user \
+    omni_parker-userdebug \
+    omni_parker-eng
