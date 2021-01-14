@@ -19,12 +19,14 @@ Front Camera | 25 MP (f/2.0)
 ![Device Picture](https://fdn2.gsmarena.com/vv/pics/motorola/motorola-one-zoom-r1.jpg)
 
 ### Kernel Source
+
 Check here: https://github.com/ixmoe/android_kernel_motorola_sm6150
 
 ### How to compile
 
 ```sh
 . build/envsetup.sh
+export LC_ALL=C
 lunch omni_parker-eng
 make -j4 recoveryimage
 ```
@@ -39,7 +41,7 @@ and add @osm0sis' standard twrp_abtemplate repo to a local manifest as indicated
 ### Copyright
  ```
   /*
-  *  Copyright (C) 2013-20 The OmniROM Project
+  *  Copyright (C) 2013-21 The OmniROM Project
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by

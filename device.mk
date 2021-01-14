@@ -1,5 +1,5 @@
 #
-# Copyright 2020 The Android Open Source Project
+# Copyright 2021 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,10 +29,10 @@ AB_OTA_UPDATER := true
 # more partitions to this list for the bootloader and radio.
 AB_OTA_PARTITIONS += \
     boot \
+    dtbo \
     system \
     vendor \
-    vbmeta \
-    dtbo
+    vbmeta
 
 PRODUCT_PACKAGES += \
     otapreopt_script \
@@ -50,15 +50,6 @@ AB_OTA_POSTINSTALL_CONFIG += \
     FILESYSTEM_TYPE_system=ext4 \
     POSTINSTALL_OPTIONAL_system=true
 
-# qcom standard decryption
-PRODUCT_PACKAGES += \
-    qcom_decrypt \
-    qcom_decrypt_fbe
-
-# tzdata
-PRODUCT_PACKAGES += \
-    tzdata_twrp
-
 # Boot control HAL
 PRODUCT_PACKAGES += \
     android.hardware.boot@1.0-impl \
@@ -72,9 +63,18 @@ PRODUCT_PACKAGES += \
 PRODUCT_HOST_PACKAGES += \
     libandroidicu
 
+# qcom standard decryption
+PRODUCT_PACKAGES += \
+    qcom_decrypt \
+    qcom_decrypt_fbe
+
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
     $(LOCAL_PATH)
+
+# tzdata
+PRODUCT_PACKAGES += \
+    tzdata_twrp
 
 # Blacklist
 PRODUCT_SYSTEM_PROPERTY_BLACKLIST += \

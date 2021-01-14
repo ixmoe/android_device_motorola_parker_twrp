@@ -1,11 +1,11 @@
 #
-# Copyright 2020 The Android Open Source Project
+# Copyright 2021 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -58,7 +58,6 @@ ENABLE_SCHEDBOOST := true
 BOARD_PROVIDES_GPTUTILS := true
 
 # Kernel
-BOARD_BOOT_HEADER_VERSION := 2
 BOARD_KERNEL_CMDLINE := \
     console=ttyMSM0,115200n8 \
     androidboot.hardware=qcom \
@@ -73,18 +72,31 @@ BOARD_KERNEL_CMDLINE := \
     firmware_class.path=/vendor/firmware_mnt/image
 # For the love of all that is holy, please do not include this in your ROM unless you really want TWRP to not work correctly!
 BOARD_KERNEL_CMDLINE += androidboot.fastboot=1
-BOARD_KERNEL_BASE := 0x00000000
+BOARD_KERNEL_CMDLINE += androidboot.selinux=permissive
+
+BOARD_BOOT_HEADER_VERSION := 2
 BOARD_KERNEL_PAGESIZE := 4096
-BOARD_KERNEL_OFFSET := 0x00008000
-BOARD_RAMDISK_OFFSET := 0x01000000
-BOARD_SECOND_OFFSET := 0x00f00000
-BOARD_TAGS_OFFSET := 0x00000100
-BOARD_KERNEL_IMAGE_NAME := Image.gz
+BOARD_KERNEL_BASE          := 0x00000000
+BOARD_KERNEL_OFFSET        := 0x00008000
+BOARD_RAMDISK_OFFSET       := 0x01000000
+BOARD_KERNEL_SECOND_OFFSET := 0x00f00000
+BOARD_KERNEL_TAGS_OFFSET   := 0x00000100
+BOARD_DTB_OFFSET           := 0x01f00000
 BOARD_KERNEL_SEPARATED_DTBO := true
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
-TARGET_PREBUILT_KERNEL := $(PLATFORM_PATH)/prebuilt/$(BOARD_KERNEL_IMAGE_NAME)
+BOARD_KERNEL_IMAGE_NAME := Image.gz
 TARGET_PREBUILT_DTB := $(PLATFORM_PATH)/prebuilt/dtb.img
-BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION) --dtb $(TARGET_PREBUILT_DTB)
+TARGET_PREBUILT_KERNEL := $(PLATFORM_PATH)/prebuilt/$(BOARD_KERNEL_IMAGE_NAME)
+
+BOARD_MKBOOTIMG_ARGS += --base $(BOARD_KERNEL_BASE)
+BOARD_MKBOOTIMG_ARGS += --pagesize $(BOARD_KERNEL_PAGESIZE)
+BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --tags_offset $(BOARD_KERNEL_TAGS_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --kernel_offset $(BOARD_KERNEL_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --second_offset $(BOARD_KERNEL_SECOND_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --dtb_offset $(BOARD_DTB_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
+BOARD_MKBOOTIMG_ARGS += --dtb $(TARGET_PREBUILT_DTB)
 
 # Partitions
 BOARD_BOOTIMAGE_PARTITION_SIZE := 0x04000000
@@ -100,7 +112,11 @@ TARGET_RECOVERY_PIXEL_FORMAT := "BGRA_8888"
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 
+# Use mke2fs to create ext4 images
+TARGET_USES_MKE2FS := true
+
 # A/B device flags
+AB_OTA_UPDATER := true
 TARGET_NO_KERNEL := false
 TARGET_NO_RECOVERY := false
 BOARD_USES_RECOVERY_AS_BOOT := true
@@ -111,7 +127,6 @@ TARGET_INIT_VENDOR_LIB := libinit_$(TARGET_DEVICE)
 TARGET_RECOVERY_DEVICE_MODULES := libinit_$(TARGET_DEVICE)
 
 # TWRP specific build flags
-BOARD_HAS_NO_REAL_SDCARD := true
 RECOVERY_SDCARD_ON_DATA := true
 TARGET_RECOVERY_QCOM_RTC_FIX := true
 TW_BRIGHTNESS_PATH := "/sys/class/backlight/panel0-backlight/brightness"
@@ -122,40 +137,37 @@ TW_INPUT_BLACKLIST := "hbtp_vm"
 TW_MAX_BRIGHTNESS := 255
 TW_DEFAULT_BRIGHTNESS := 120
 TW_THEME := portrait_hdpi
-TARGET_RECOVERY_DEVICE_MODULES += \
-    android.hidl.base@1.0 \
-    libicuuc \
-    libion \
-    libprocinfo \
-    libxml2
-TW_RECOVERY_ADDITIONAL_RELINK_FILES += \
-    $(TARGET_OUT_SHARED_LIBRARIES)/android.hidl.base@1.0.so \
-    $(TARGET_OUT_SHARED_LIBRARIES)/libicuuc.so \
-    $(TARGET_OUT_SHARED_LIBRARIES)/libion.so \
-    $(TARGET_OUT_SHARED_LIBRARIES)/libprocinfo.so \
-    $(TARGET_OUT_SHARED_LIBRARIES)/libxml2.so
+TARGET_USE_CUSTOM_LUN_FILE_PATH := /config/usb_gadget/g1/functions/mass_storage.0/lun.%d/file
+TW_SCREEN_BLANK_ON_BOOT := true
 
 # Additional binaries & libraries needed for recovery
 TARGET_RECOVERY_DEVICE_MODULES += \
     android.hidl.base@1.0 \
+    ashmemd \
     ashmemd_aidl_interface-cpp \
     libashmemd_client \
     libcap \
+    libicui18n \
+    libicuuc \
     libion \
     libpcrecpp \
+    libprocinfo \
     libxml2
+
+TW_RECOVERY_ADDITIONAL_RELINK_BINARY_FILES += \
+    $(TARGET_OUT_EXECUTABLES)/ashmemd
 
 TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += \
     $(TARGET_OUT_SHARED_LIBRARIES)/android.hidl.base@1.0.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/ashmemd_aidl_interface-cpp.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/libashmemd_client.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/libcap.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/libicui18n.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/libicuuc.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/libion.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/libpcrecpp.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/libprocinfo.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/libxml2.so
-
-TARGET_USE_CUSTOM_LUN_FILE_PATH := /config/usb_gadget/g1/functions/mass_storage.0/lun.%d/file
-TW_SCREEN_BLANK_ON_BOOT := true
 
 # Encryption
 PLATFORM_VERSION := 16.1.0
